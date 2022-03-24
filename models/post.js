@@ -27,7 +27,7 @@ const PostSchema = new Schema(
       type: Boolean,
     },
   },
-  { timestamps }
+  { timestamps: true }
 );
 
 PostSchema.virtual('createdAtFormatted').get(function () {

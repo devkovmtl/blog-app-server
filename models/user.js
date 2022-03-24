@@ -27,7 +27,7 @@ const UserSchema = new Schema(
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comments' }],
   },
-  { timestamps }
+  { timestamps: true }
 );
 
 module.exports = model('User', UserSchema);
