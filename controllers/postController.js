@@ -29,6 +29,7 @@ exports.postCreate = [
         title: req.body.title,
         content: req.body.content,
         author: userId,
+        isPublished: req.body.isPublished,
       });
 
       await post.save();
@@ -94,6 +95,7 @@ exports.updatePost = [
         title: req.body.title,
         content: req.body.content,
         author: userId,
+        isPublished: req.body.isPublished,
         _id: req.params.postId,
       });
 
