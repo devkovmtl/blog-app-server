@@ -59,7 +59,10 @@ exports.getPostDetail = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.postId, '-__v')
       .populate('author', 'username')
-      .populate('comments');
+      .populate({
+        path: 'comments',
+        populate: { path: 'author', select: '_id username' },
+      });
 
     if (!post) {
       res.status(404).json({ message: 'No post found', post: {} });
