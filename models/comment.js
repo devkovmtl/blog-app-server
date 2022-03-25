@@ -16,7 +16,7 @@ const CommentSchema = new Schema(
       ref: 'Post',
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 CommentSchema.virtual('createdAtFormatted').get(function () {

@@ -51,3 +51,18 @@ exports.getPostList = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getPostDetail = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.postId, '-__v')
+      .populate('author', 'username')
+      .populate('comments');
+
+    if (!post) {
+      res.status(404).json({ message: 'No post found', post: {} });
+    }
+    res.json({ post });
+  } catch (error) {
+    next(error);
+  }
+};

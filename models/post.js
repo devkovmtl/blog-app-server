@@ -17,17 +17,11 @@ const PostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    // comments: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Comment',
-    //   },
-    // ],
     isPublished: {
       type: Boolean,
     },
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 PostSchema.virtual('createdAtFormatted').get(function () {
@@ -44,7 +38,7 @@ PostSchema.virtual('updatedAtFormatted').get(function () {
 
 PostSchema.virtual('comments', {
   ref: 'Comment',
-  localField: '_id',
+  localField: 'id',
   foreignField: 'post',
 });
 

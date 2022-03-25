@@ -25,12 +25,12 @@ const UserSchema = new Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 UserSchema.virtual('posts', {
   ref: 'Post',
-  localField: '_id',
+  localField: 'id',
   foreignField: 'author',
 });
 
