@@ -24,10 +24,14 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
-    comments: [{ type: Schema.Types.ObjectId, ref: 'Comments' }],
   },
   { timestamps: true }
 );
+
+UserSchema.virtual('posts', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'author',
+});
 
 module.exports = model('User', UserSchema);

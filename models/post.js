@@ -8,7 +8,7 @@ const PostSchema = new Schema(
       minlength: 1,
       required: true,
     },
-    body: {
+    content: {
       type: String,
       minlength: 1,
       required: true,
@@ -17,17 +17,17 @@ const PostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
+    // comments: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Comment',
+    //   },
+    // ],
     isPublished: {
       type: Boolean,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 );
 
 PostSchema.virtual('createdAtFormatted').get(function () {
@@ -40,6 +40,12 @@ PostSchema.virtual('updatedAtFormatted').get(function () {
   return `${DateTime.fromJSDate(this.updatedAt).toLocaleString(
     DateTime.DATE_SHORT
   )}`;
+});
+
+PostSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'post',
 });
 
 module.exports = model('Post', PostSchema);
