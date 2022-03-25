@@ -72,7 +72,14 @@ exports.register = [
           { expiresIn: 60 * 60 }
         );
 
-        return res.status(200).json({});
+        return res.status(200).json({
+          token,
+          user: {
+            _id: user._id,
+            username: user.username,
+            isAdmin: user.isAdmin,
+          },
+        });
       } catch (error) {
         return next(error);
       }
