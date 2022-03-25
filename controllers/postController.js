@@ -1,10 +1,12 @@
 const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const Post = require('../models/post');
+const { isAdmin } = require('../middlewares/isAdmin');
 const { getUserIdFromHeader } = require('../utils/getUserIdFromHeader');
 
 exports.postCreate = [
   passport.authenticate('jwt', { session: false }),
+  isAdmin,
   body('title')
     .trim()
     .isLength({ min: 1 })
@@ -70,6 +72,7 @@ exports.getPostDetail = async (req, res, next) => {
 
 exports.updatePost = [
   passport.authenticate('jwt', { session: false }),
+  isAdmin,
   body('title')
     .trim()
     .isLength({ min: 1 })
@@ -110,6 +113,7 @@ exports.updatePost = [
 
 exports.deletePost = [
   passport.authenticate('jwt', { session: false }),
+  isAdmin,
   async (req, res, next) => {
     try {
       await Post.findByIdAndRemove(req.params.postId);
