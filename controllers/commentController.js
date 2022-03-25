@@ -2,6 +2,7 @@ const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const { getUserIdFromHeader } = require('../utils/getUserIdFromHeader');
 const Comment = require('../models/comment');
+const { isAdmin } = require('../middlewares/isAdmin');
 
 exports.createComment = [
   passport.authenticate('jwt', { session: false }),
@@ -25,6 +26,27 @@ exports.createComment = [
       });
       await comment.save();
       res.json({ success: true, message: 'Comment created' });
+    } catch (error) {
+      next(error);
+    }
+  },
+];
+
+exports.deleteComment = [
+  passport.authenticate('jwt', { session: false }),
+  isAdmin,
+  async (req, res, next) => {
+    try {
+      const deletedComment = await Comment.findByIdAndRemove(
+        req.params.commentId
+      );
+
+      if (!deletedComment) {
+        return res
+          .status(404)
+          .json({ success: false, message: 'No comment found' });
+      }
+      res.json({ success: true, message: 'Comment deleted!' });
     } catch (error) {
       next(error);
     }

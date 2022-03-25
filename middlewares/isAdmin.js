@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 exports.isAdmin = (req, res, next) => {
-  console.log(req.headers);
   const bearerHeaders = req.headers['authorization'];
   // if user exist token was sent with the request
   if (bearerHeaders) {
