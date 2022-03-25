@@ -32,7 +32,7 @@ exports.postCreate = [
       });
 
       await post.save();
-      res.json({ message: 'Post Created' });
+      res.json({ success: true, message: 'Post Created' });
     } catch (error) {
       next(error);
     }
@@ -46,7 +46,7 @@ exports.getPostList = async (req, res, next) => {
       .sort({ updatedAt: -1, createdAt: -1 })
       .exec();
 
-    res.json({ posts: posts });
+    res.json({ success: true, posts: posts });
   } catch (error) {
     next(error);
   }
@@ -61,7 +61,7 @@ exports.getPostDetail = async (req, res, next) => {
     if (!post) {
       res.status(404).json({ message: 'No post found', post: {} });
     }
-    res.json({ post });
+    res.json({ success: true, post });
   } catch (error) {
     next(error);
   }
@@ -98,9 +98,21 @@ exports.updatePost = [
       });
 
       const newPost = await Post.findByIdAndUpdate(req.params.postId, post, {});
-      return res.json({ newPost });
+      return res.json({ success: true, message: 'Post updated', newPost });
     } catch (error) {
       console.log(error);
+      next(error);
+    }
+  },
+];
+
+exports.deletePost = [
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      await Post.findByIdAndRemove(req.params.postId);
+      res.json({ success: true, message: 'Post deleted!' });
+    } catch (error) {
       next(error);
     }
   },
