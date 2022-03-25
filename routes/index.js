@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const router = Router();
+const postController = require('../controllers/postController');
 
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  res.json({ title: 'Express' });
-});
+/* CREATE a POST */
+router.post('/', postController.postCreate);
+/* GET Post List */
+router.get('/', postController.getPostList);
 
 module.exports = router;
