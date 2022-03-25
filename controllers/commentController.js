@@ -5,11 +5,15 @@ const Comment = require('../models/comment');
 const { isAdmin } = require('../middlewares/isAdmin');
 
 exports.createComment = [
-  passport.authenticate('jwt', { session: false }),
   body('content')
     .trim()
     .isLength({ min: 1 })
     .withMessage('Comment content is required')
+    .escape(),
+  body('username')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Username is required')
     .escape(),
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -17,11 +21,9 @@ exports.createComment = [
       return res.status(400).json({ errors: errors.array() });
     }
     try {
-      const userId = getUserIdFromHeader(req.headers['authorization']);
-
       const comment = new Comment({
         content: req.body.content,
-        author: userId,
+        username: req.body.username,
         post: req.params.postId,
       });
       await comment.save();

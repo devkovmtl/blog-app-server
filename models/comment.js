@@ -7,9 +7,14 @@ const CommentSchema = new Schema(
       type: String,
       minlength: 1,
     },
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+    // author: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'User',
+    // },
+    username: {
+      type: String,
+      minlength: 1,
+      required: true,
     },
     post: {
       type: Schema.Types.ObjectId,
