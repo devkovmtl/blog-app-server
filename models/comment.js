@@ -3,7 +3,7 @@ const { DateTime } = require('luxon');
 
 const CommentSchema = new Schema(
   {
-    body: {
+    content: {
       type: String,
       minlength: 1,
     },

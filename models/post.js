@@ -38,7 +38,7 @@ PostSchema.virtual('updatedAtFormatted').get(function () {
 
 PostSchema.virtual('comments', {
   ref: 'Comment',
-  localField: 'id',
+  localField: '_id',
   foreignField: 'post',
 });
 
