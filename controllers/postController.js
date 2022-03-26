@@ -46,6 +46,7 @@ exports.getPostList = async (req, res, next) => {
   try {
     const posts = await Post.find({}, '-__v')
       .populate('author', 'username')
+      .populate('commentCount')
       .sort({ updatedAt: -1, createdAt: -1 })
       .exec();
 

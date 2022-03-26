@@ -42,4 +42,10 @@ PostSchema.virtual('comments', {
   foreignField: 'post',
 });
 
+PostSchema.virtual('commentCount', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'post',
+  count: true,
+});
 module.exports = model('Post', PostSchema);
