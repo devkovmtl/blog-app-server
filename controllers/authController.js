@@ -115,3 +115,23 @@ exports.login = async (req, res, next) => {
     }
   })(req, res, next);
 };
+
+exports.checkJWTToken = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      res.statusCode = 401;
+      return res.json({ success: false, error: info, user: null });
+    }
+    if (user) {
+      res.statusCode = 200;
+      return res.json({
+        success: true,
+        error: null,
+        user: { _id: user._id, username: user.username, isAdmin: user.isAdmin },
+      });
+    }
+  })(req, res, next);
+};
