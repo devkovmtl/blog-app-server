@@ -19,6 +19,7 @@ const PostSchema = new Schema(
     },
     isPublished: {
       type: Boolean,
+      default: false,
     },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }

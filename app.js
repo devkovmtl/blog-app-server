@@ -13,7 +13,7 @@ const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const commentRouter = require('./routes/comment');
 
-const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_DATABASE } =
+const { NODE_ENV, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_DATABASE } =
   process.env;
 
 // Setup mongoose db
@@ -50,7 +50,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = NODE_ENV === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);

@@ -3,26 +3,34 @@ const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const { JWT_TOKEN_SECRET } = process.env;
 
 passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      const user = await User.findOne({ username });
-      if (!user) {
-        return done(null, false, 'Invalid credentials');
+  new LocalStrategy(
+    {
+      usernameField: 'username',
+      passwordField: 'password',
+      session: false,
+    },
+    async (username, password, done) => {
+      try {
+        const user = await User.findOne({ username });
+        if (!user) {
+          return done(null, false, { message: 'Invalid credentials' });
+        }
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+          return done(null, false, { message: 'Invalid credentials' });
+        }
+        return done(null, user, { message: 'Logged in successfully' });
+      } catch (error) {
+        return done(error);
       }
-      const isValid = await bcrypt.compare(password, user.password);
-      if (!isValid) {
-        return done(null, false, 'Invalid credentials');
-      }
-      return done(null, user, 'Logged in successfully');
-    } catch (error) {
-      return done(error);
     }
-  })
+  )
 );
 
 const options = {
@@ -44,5 +52,17 @@ passport.use(
     }
   })
 );
+
+exports.getJWTTOKEN = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      isAdmin: user.isAdmin,
+    },
+    JWT_TOKEN_SECRET,
+    { expiresIn: 60 * 60 }
+  );
+};
 
 exports.verifyUser = passport.authenticate('jwt', { session: false });
