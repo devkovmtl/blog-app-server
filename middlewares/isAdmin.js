@@ -10,9 +10,24 @@ exports.isAdmin = (req, res, next) => {
     if (decodedToken.isAdmin) {
       next();
     } else {
-      res.status(401).json({ error: 'You are not authorized' });
+      res.status(401).json({
+        success: false,
+        message: 'You are not authorize to create a post',
+        errors: [
+          { param: 'auth', msg: 'You are not authorize to create a post' },
+        ],
+      });
     }
   } else {
-    res.status(403).json({ error: 'You must login first.' });
+    res.status(403).json({
+      success: false,
+      message: 'You must login first in order to create a post',
+      errors: [
+        {
+          param: 'auth',
+          msg: 'You must login first in order to create a post',
+        },
+      ],
+    });
   }
 };
