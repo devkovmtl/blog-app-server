@@ -18,7 +18,12 @@ exports.createComment = [
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        message: 'Create comment failed',
+        comment: null,
+        errors: errors.array(),
+      });
     }
     try {
       const comment = new Comment({
@@ -27,7 +32,12 @@ exports.createComment = [
         post: req.params.postId,
       });
       await comment.save();
-      res.json({ success: true, message: 'Comment created' });
+      res.json({
+        success: true,
+        message: 'Comment created',
+        comment,
+        errors: null,
+      });
     } catch (error) {
       next(error);
     }
@@ -39,16 +49,8 @@ exports.deleteComment = [
   isAdmin,
   async (req, res, next) => {
     try {
-      const deletedComment = await Comment.findByIdAndRemove(
-        req.params.commentId
-      );
-
-      if (!deletedComment) {
-        return res
-          .status(404)
-          .json({ success: false, message: 'No comment found' });
-      }
-      res.json({ success: true, message: 'Comment deleted!' });
+      await Comment.findByIdAndRemove(req.params.commentId);
+      res.json({ success: true, message: 'Comment deleted', errors: null });
     } catch (error) {
       next(error);
     }
