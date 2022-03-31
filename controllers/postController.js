@@ -21,7 +21,12 @@ exports.postCreate = [
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        message: 'Error create post failed',
+        post: null,
+        errors: errors.array(),
+      });
     }
     try {
       // get id from jwt token
@@ -31,11 +36,11 @@ exports.postCreate = [
         title: req.body.title,
         content: req.body.content,
         author: userId,
-        isPublished: req.body.isPublished,
+        isPublished: req.body.isPublished || false,
       });
 
       await post.save();
-      res.json({ success: true, message: 'Post Created' });
+      res.json({ success: true, message: 'Post Created', post, errors: null });
     } catch (error) {
       next(error);
     }
@@ -50,7 +55,12 @@ exports.getPostList = async (req, res, next) => {
       .sort({ updatedAt: -1, createdAt: -1 })
       .exec();
 
-    res.json({ success: true, posts: posts });
+    res.json({
+      success: true,
+      message: 'Fetch post success',
+      posts: posts,
+      errors: null,
+    });
   } catch (error) {
     next(error);
   }
@@ -67,9 +77,19 @@ exports.getPostDetail = async (req, res, next) => {
     // });
 
     if (!post) {
-      return res.status(404).json({ message: 'No post found', post: {} });
+      return res.status(404).json({
+        success: false,
+        message: 'No post found',
+        post: {},
+        errors: [{ param: 'post', msg: 'No post found with provided id' }],
+      });
     }
-    res.json({ success: true, post });
+    return res.json({
+      success: true,
+      message: 'Post found',
+      post,
+      errors: null,
+    });
   } catch (error) {
     next(error);
   }
@@ -91,7 +111,12 @@ exports.updatePost = [
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        message: 'Error could not update post',
+        post: null,
+        errors: errors.array(),
+      });
     }
     try {
       // get id from jwt token
@@ -107,8 +132,13 @@ exports.updatePost = [
         _id: req.params.postId,
       });
 
-      const newPost = await Post.findByIdAndUpdate(req.params.postId, post, {});
-      return res.json({ success: true, message: 'Post updated', newPost });
+      await Post.findByIdAndUpdate(req.params.postId, post, {});
+      return res.json({
+        success: true,
+        message: 'Post updated success',
+        post,
+        errors: null,
+      });
     } catch (error) {
       console.log(error);
       next(error);
@@ -122,7 +152,7 @@ exports.deletePost = [
   async (req, res, next) => {
     try {
       await Post.findByIdAndRemove(req.params.postId);
-      res.json({ success: true, message: 'Post deleted!' });
+      res.json({ success: true, message: 'Post deleted', errors: null });
     } catch (error) {
       next(error);
     }
