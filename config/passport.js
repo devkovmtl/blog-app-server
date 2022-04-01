@@ -61,7 +61,7 @@ exports.getJWTTOKEN = (user) => {
       isAdmin: user.isAdmin,
     },
     JWT_TOKEN_SECRET,
-    { expiresIn: 60 * 60 }
+    { expiresIn: 24 * 60 * 60 }
   );
 };
 
